@@ -2,7 +2,7 @@
 
 ## Is it possible in Power BI?
 **Yes, about 90% of it is native.** You will get the same pages, KPI cards, charts, call-drop heatmap, scorecard, Bangladesh division map, slicers, and click-to-filter behaviour (click a bar, slice, month or map division and every visual on every page reacts). Differences you should expect:
-- **Glow / neon and bar-grow animation** do not exist in Power BI. The dark cards, borders, gradients and glow are drawn into the 9 background PNGs instead, so the look is very close.
+- **Glow / neon and bar-grow animation:** Power BI has no animations and no true glow. You get dark cards, rounded orange borders, yellow titles and a soft orange shadow from normal visual formatting, which comes very close. Everything is built natively (visuals, shapes, text boxes), no images.
 - **Concentric health rings** become 5 small gauges.
 - **Map value labels:** the Shape map shows names and tooltips; the ranked bar chart next to it shows the values.
 - **Live insights** are DAX text measures in a multi-row card.
@@ -15,7 +15,7 @@ Time needed the first time: about 4 to 6 hours. Work in this order: Part A (data
 
 ## A1. Before you start
 1. Windows PC with the latest **Power BI Desktop** (Microsoft Store or powerbi.microsoft.com). Sign-in is not needed.
-2. Unzip the project to `D:\nextel-portfolio\`. You will use the `data`, `dax`, `theme`, `geo` and `powerbi\backgrounds` folders.
+2. Unzip the project to `D:\nextel-portfolio\`. You will use the `data`, `dax`, `theme` and `geo` folders.
 3. Open Power BI Desktop > close the welcome screen > **File > Save as** > `D:\nextel-portfolio\nextel_telecom_master.pbix`. Save often.
 
 ## A2. Load the 16 tables
@@ -74,24 +74,26 @@ Tidy the diagram: drag Dim_ tables to the top and Fact_ tables below so it looks
 - `Fact_Network_Service_Calls` > `Customer Churned = RELATED(Dim_Customers[IsChurned])`
 
 ## A8. Theme
-**View > Themes** (click the small arrow) > **Browse for themes** > `D:\nextel-portfolio\theme\nextel_theme.json` > Open. This sets the palette (yellow, orange, red) and switches off visual backgrounds, borders and titles, because the background image draws them.
+**View > Themes** (click the small arrow) > **Browse for themes** > `D:\nextel-portfolio\theme\nextel_theme.json` > Open. This sets the palette (yellow, orange, red) and makes every new visual look like a card: near-black background, dark-orange rounded border, yellow left-aligned title, no visual header icons. **Check it:** insert any visual; if it does not look like that, apply recipe R-BOX (Part B) to it once and copy the look to others with **Home > Format painter**.
 
 ## A9. Pages, canvas, background, global filter
 1. Make 9 pages: click **+** next to the page tabs 8 times. Double-click each tab to rename: Command Center, Revenue & ARPU, Subscribers & Churn, Network Performance, Customer Experience, Usage & Digital, Billing & Collections, Sales & Distribution, Workforce.
 2. For **each** page: click an empty spot on the canvas > **Format pane (paint roller icon) > Page tab**:
    - **Canvas settings > Type: Custom; Width 1920; Height 1080** (pixels).
-   - **Canvas background > Image > Browse** > pick that page's PNG from `powerbi\backgrounds\` (names are numbered 01 to 09 in page order). **Image fit: Fit. Transparency: 0%.**
+   - **Canvas background > Color #05060A, Transparency 0%.**
    - **Wallpaper > Color #05060A, Transparency 0%.**
    - **View > Page view > Fit to page.**
 3. Report-wide date limit (hides the partial June 2026): in the **Filters pane** > **Filters on all pages** > drag `Dim_Date[Date]` there > Filter type **Advanced filtering** > "is on or before" > 31 May 2026 > **Apply filter**.
 
 ---
 # PART B: Formatting recipes (read once; Part C refers to them)
-Select a visual > **Format visual (paint roller)**. Every visual: **General tab > Title: Off; Effects > Background: Off; Visual border: Off**.
+Select a visual > **Format visual (paint roller)**.
 
-**R0 KPI card.** Visualization **Card**. Visual tab: **Callout value** font Segoe UI Semibold, size 30, color given in the step; Display units Auto; **Category label: Off**.
+**R-BOX Card look (every visual).** General tab: **Title: On**, text as given in the step, font Segoe UI Semibold 12, color #FFC107, alignment Left, title background Off. **Effects > Background: On**, color #0E0B08, transparency 4%. **Effects > Visual border: On**, color #5C2D00, rounded corners 10 px. **Effects > Shadow: On**, color #FF7A00, transparency 80%, blur 14, offset 0 / 0 (labels vary: choose "Custom" shadow if you see presets). **Header icons: Off** (Format > General > Header icons). Padding (General > Properties > Padding) 8 px all sides.
 
-**R1 Slicer.** Visual tab > **Slicer settings > Options**: Style Tile (or Dropdown for Month), Orientation Horizontal (tiles only), **Multi-select with Ctrl/Cmd: Off** (so each click toggles), **Show "Select all": Off**. **Slicer header: Off**. **Values/Items:** font Segoe UI 10, color #C9C5BB; background #14110A; border color #FF7A00 transparency 60%; for the selected state set background #FF7A00 and font color #000000. Menu labels vary: look for Default / Hover / Selected states.
+**R0 KPI card.** Visualization **Card**. R-BOX, but Title text = the KPI name in capitals, font Segoe UI 10, color #8A8F98. Visual tab: **Callout value** font Segoe UI Semibold, size 30, color given in the step; Display units Auto; **Category label: Off**. Then add a thin colour strip on the card top: Insert > Shapes > Rectangle, 3 px high, same width as the card, same X, Y = card Y, fill = callout color, line Off (bring it to front in the Selection pane).
+
+**R1 Slicer.** Visual tab > **Slicer settings > Options**: Style Tile (or Dropdown for Month), Orientation Horizontal (tiles only), **Multi-select with Ctrl/Cmd: Off** (so each click toggles), **Show "Select all": Off**. **Slicer header: On**, text the field name in capitals, font Segoe UI 9, color #8A8F98. **Values/Items:** font Segoe UI 10, color #C9C5BB; background #14110A; border color #FF7A00 transparency 60%; for the selected state set background #FF7A00 and font color #000000. Menu labels vary: look for Default / Hover / Selected states.
 
 **R2 Column chart (also the dual chart).** X-axis: Values font color #8A8F98, size 9; Title Off. Y-axis: Off. Gridlines: Horizontal, color #2A2A2A. Columns: color per step; Layout: Space between categories (inner padding) 25%. Data labels Off. Legend Off (dual: On, top, #C9C5BB).
 
@@ -110,266 +112,273 @@ Select a visual > **Format visual (paint roller)**. Every visual: **General tab 
 **R9 Shape map (Bangladesh).** Add the visual **Shape map** (if it is missing: File > Options > Preview features, enable Shape map visual, restart). Format visual > **Map settings > Map type > Custom map > Add map** (the upload button) > `D:\nextel-portfolio\geo\bd_divisions.topojson`. The shapes must appear; the property that matches is `Division`. Colors: **Default color** off, use gradient on Color saturation: Minimum #1A0F02, Center #FF7A00, Maximum #FFC107. Border color #05060A, width 2. Legend Off. Auto zoom On. Projection Mercator.
 
 
-# PART C - Build the 9 pages
-For every page: (1) add the page, (2) apply the background, (3) add the 4 slicers, (4) add the KPI cards, (5) add the panels. Coordinates are in pixels on the 1920 x 1080 canvas. "Position" = Horizontal / Vertical, "Size" = Width / Height (Format visual > General > Properties). Titles are already drawn in the background image, so every visual has Title OFF.
+# PART C: Build the 9 pages (all native, no images)
+Coordinates are pixels on the 1920 x 1080 canvas. Set them in **Format visual > General > Properties > Size / Position** (Horizontal = X, Vertical = Y; for shapes and text boxes the same fields are under Format shape / Format text box > Size & position). Open **View > Selection pane** to select, rename, hide and reorder objects. Each chart is a visual that already looks like a card (recipe R-BOX), so no separate frames are needed.
+
+## C0. Page chrome (build once on page 1, then copy to all 9 pages)
+1. **Sidebar:** Insert > Shapes > Rectangle. Position 0 / 0, Size 230 x 1080. Format shape: Fill #07080D, Line Off. Selection pane: send to back.
+2. **Sidebar edge:** Rectangle, Position 229 / 0, Size 2 x 1080, Fill #FF7A00, transparency 45%, Line Off.
+3. **Logo:** Insert > Text box, text `NEXTEL`, Position 20 / 14, Size 190 x 46, font Segoe UI Semibold 26, color #FF9600. Second text box `INTELLIGENCE HUB`, Position 20 / 58, Size 190 x 22, font Segoe UI 10, color #8A8F98.
+4. **Page title:** Text box, Position 248 / 8, Size 1200 x 44, font Segoe UI Semibold 28, color #F5F1E8, all capitals. **Subtitle:** Text box, Position 248 / 52, Size 1200 x 28, font Segoe UI 13, color #8A8F98.
+5. **Badge:** Insert > Shapes > Rectangle (rounded corners 14), Position 1690 / 18, Size 212 x 30, Fill Off, Line #FF7A00 1 px. Type `SYNTHETIC DATA` in it: Segoe UI 11, color #FFC107, centered.
+6. **Navigator:** Insert > Buttons > Navigator > Page navigator. Position 12 / 100, Size 206 x 560. Format visual > Style > Text: Segoe UI 12, color #F5F1E8. Fill: Default #14110A, Hover #FF7A00 (text #000000), Selected #FF7A00 at transparency 70%. Shape > Round corners 8. Layout > Orientation Vertical, Padding 6. Title Off, Background Off, Border Off.
+7. Select items 1 to 6 (Selection pane, Ctrl+click) > Ctrl+C > go to page 2 > Ctrl+V (they paste at the same position). Repeat for pages 3 to 9. On each page change only the title and subtitle texts (given in each page below).
 
 
 ## Page 1: Command Center
-Background file: `powerbi/backgrounds/01_home.png`
+Page title text: `COMMAND CENTER`. Subtitle: `NexTel Communications - Bangladesh - 8 divisions`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Total Subscribers]`: Position 254 / 180, Size 182 x 54. Callout value color #FFC107.
-- Card `[Active Subscribers]`: Position 462 / 180, Size 182 x 54. Callout value color #FF7A00.
-- Card `[Churn Rate %]`: Position 671 / 180, Size 182 x 54. Callout value color #E5262B.
-- Card `[ARPU]`: Position 879 / 180, Size 182 x 54. Callout value color #FFC107.
-- Card `[NPS]`: Position 1088 / 180, Size 182 x 54. Callout value color #FF7A00.
-- Card `[Call Drop Rate %]`: Position 1296 / 180, Size 182 x 54. Callout value color #E5262B.
-- Card `[Site Availability %]`: Position 1505 / 180, Size 182 x 54. Callout value color #FFC107.
-- Card `[Collection Efficiency %]`: Position 1713 / 180, Size 182 x 54. Callout value color #FF7A00.
+- Card `[Total Subscribers]`, title `SUBSCRIBERS`: Position 248 / 152, Size 194 x 88. Callout color #FFC107. Color strip: rectangle 194 x 3 at 248 / 152, fill #FFC107.
+- Card `[Active Subscribers]`, title `ACTIVE`: Position 456 / 152, Size 194 x 88. Callout color #FF7A00. Color strip: rectangle 194 x 3 at 456 / 152, fill #FF7A00.
+- Card `[Churn Rate %]`, title `CHURN`: Position 665 / 152, Size 194 x 88. Callout color #E5262B. Color strip: rectangle 194 x 3 at 665 / 152, fill #E5262B.
+- Card `[ARPU]`, title `ARPU / MONTH`: Position 873 / 152, Size 194 x 88. Callout color #FFC107. Color strip: rectangle 194 x 3 at 873 / 152, fill #FFC107.
+- Card `[NPS]`, title `NPS`: Position 1082 / 152, Size 194 x 88. Callout color #FF7A00. Color strip: rectangle 194 x 3 at 1082 / 152, fill #FF7A00.
+- Card `[Call Drop Rate %]`, title `CALL DROP`: Position 1290 / 152, Size 194 x 88. Callout color #E5262B. Color strip: rectangle 194 x 3 at 1290 / 152, fill #E5262B.
+- Card `[Site Availability %]`, title `AVAILABILITY`: Position 1499 / 152, Size 194 x 88. Callout color #FFC107. Color strip: rectangle 194 x 3 at 1499 / 152, fill #FFC107.
+- Card `[Collection Efficiency %]`, title `COLLECTIONS`: Position 1707 / 152, Size 194 x 88. Callout color #FF7A00. Color strip: rectangle 194 x 3 at 1707 / 152, fill #FF7A00.
 
 **Panels**
 
 - **Division density map** (3 visuals):
-  1. Slicer `_MapMetric[Metric]`, Tile, horizontal, single-select (Selection: Single select ON, Select all OFF): Position 258 / 288, Size 1078 x 32.
-  2. Shape map: Position 258 / 326, Size 592 x 288. Location `Dim_Division[Division]`, Color saturation `[Map Metric Value]`. Recipe R9.
-  3. Clustered bar chart: Position 860 / 326, Size 475 x 288. Y-axis `Dim_Division[Division]`, X-axis `[Map Metric Value]`, sort descending. Recipe R4 (color #FFC107).
-- **Network & customer health**: five Gauge visuals (recipe R7), each Size 166 x 157. Build one, then copy 4 times:
-  - Gauge 1: Value `[Collection Efficiency %]`, Maximum 1, fill #FFC107. Position 1370 / 292.
-  - Gauge 2: Value `[Site Availability %]`, Maximum 100, fill #FF7A00. Position 1544 / 292.
-  - Gauge 3: Value `[FCR %]`, Maximum 1, fill #E5262B. Position 1718 / 292.
-  - Gauge 4: Value `[SLA Compliance %]`, Maximum 1, fill #C4891A. Position 1370 / 453.
-  - Gauge 5: Value `[Retention %]`, Maximum 1, fill #FF9E57. Position 1544 / 453.
-- **Service revenue (M BDT)**: Clustered column chart. Position 258 / 676, Size 522 x 147. X-axis `Dim_Date[MonthName]`; Y-axis [Service Revenue]. Recipe R2, main color #FFC107. 
-- **Gross adds vs churned**: Clustered column chart. Position 814 / 676, Size 522 x 147. X-axis `Dim_Date[MonthName]`; Y-axis [Gross Adds], [Churned (by date)]. Recipe R2. Series colors: first measure #FFC107, second #E5262B. Legend On (top, font #C9C5BB).
-- **Revenue mix**: Donut chart. Position 1370 / 676, Size 522 x 147. Legend `_Mix[Service]`; Values [Mix Value]. Recipe R5. Needs table `_Mix` (Part A7).
-- **Division scorecard**: Matrix. Position 258 / 885, Size 1078 x 166. Rows Dim_Division[Division] | [Total Subscribers], [Population Density], [Subscriber Density], [Tower Density], [Churn Rate %], [ARPU], [Call Drop Rate %], [Site Availability %], [Avg CSAT]. Recipe R6. 
-- **Live insights**: Multi-row card. Position 1370 / 885, Size 522 x 166. [Insight Drop], [Insight Density], [Insight Churn], [Insight Collections]. Recipe R8. 
+  1. Slicer `_MapMetric[Metric]`: Tile, horizontal, **Single select ON**, Select all OFF, header `MAP METRIC`. Position 248 / 254, Size 1098 x 56. Recipes R-BOX + R1.
+  2. Shape map, title `DIVISION DENSITY MAP`: Position 248 / 324, Size 636 x 300. Location `Dim_Division[Division]`, Color saturation `[Map Metric Value]`. Recipes R-BOX + R9.
+  3. Clustered bar chart, title `RANKING`: Position 898 / 324, Size 448 x 300. Y-axis `Dim_Division[Division]`, X-axis `[Map Metric Value]`, sort descending. Recipes R-BOX + R4 (color #FFC107).
+- **Network & customer health**: six Gauge visuals (recipes R-BOX + R7), each Size 171 x 178. Build the first, then copy/paste it 5 times and change fields and titles:
+  - Gauge 1, title `COLLECTIONS`: Value `[Collection Efficiency %]`, Minimum 0, Maximum 1, Target 0.95, fill #FFC107. Position 1360 / 254.
+  - Gauge 2, title `AVAILABILITY`: Value `[Site Availability %]`, Minimum 95, Maximum 100, Target 99.5, fill #FF7A00. Position 1545 / 254.
+  - Gauge 3, title `FIRST-CONTACT RESOLUTION`: Value `[FCR %]`, Minimum 0, Maximum 1, Target 0.8, fill #E5262B. Position 1730 / 254.
+  - Gauge 4, title `SLA MET`: Value `[SLA Compliance %]`, Minimum 0, Maximum 1, Target 0.9, fill #C4891A. Position 1360 / 446.
+  - Gauge 5, title `RETENTION`: Value `[Retention %]`, Minimum 0, Maximum 1, Target 0.9, fill #FF9E57. Position 1545 / 446.
+  - Gauge 6, title `CSAT`: Value `[Avg CSAT]`, Minimum 0, Maximum 5, Target 4, fill #FFC107. Position 1730 / 446.
+- **Service revenue (M BDT)**, title `SERVICE REVENUE (M BDT)`: Clustered column chart. Position 248 / 638, Size 542 x 195. X-axis `Dim_Date[MonthName]`; Y-axis [Service Revenue]. Recipes R-BOX + R2, main color #FFC107. Display units: Millions.
+- **Gross adds vs churned**, title `GROSS ADDS VS CHURNED`: Clustered column chart. Position 804 / 638, Size 542 x 195. X-axis `Dim_Date[MonthName]`; Y-axis [Gross Adds], [Churned (by date)]. Recipes R-BOX + R2. Series colors: first measure #FFC107, second #E5262B. Legend On (top, #C9C5BB).
+- **Revenue mix**, title `REVENUE MIX`: Donut chart. Position 1360 / 638, Size 542 x 195. Legend `_Mix[Service]`; Values [Mix Value]. Recipes R-BOX + R5. Needs table `_Mix` (A7).
+- **Division scorecard**, title `DIVISION SCORECARD`: Matrix. Position 248 / 847, Size 1098 x 214. Rows Dim_Division[Division] | [Total Subscribers], [Population Density], [Subscriber Density], [Tower Density], [Churn Rate %], [ARPU], [Call Drop Rate %], [Site Availability %], [Avg CSAT]. Recipes R-BOX + R6. 
+- **Live insights**, title `LIVE INSIGHTS`: Multi-row card. Position 1360 / 847, Size 542 x 214. [Insight Drop], [Insight Density], [Insight Churn], [Insight Collections]. Recipes R-BOX + R8. 
 
 ## Page 2: Revenue & ARPU
-Background file: `powerbi/backgrounds/02_rev.png`
+Page title text: `REVENUE & ARPU`. Subtitle: `Service revenue across voice, data, SMS and VAS`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Service Revenue]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[ARPU]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[LTV]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[LTV to CAC]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[Service Revenue]`, title `SERVICE REVENUE`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[ARPU]`, title `ARPU / MONTH`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[LTV]`, title `LTV (35% MARGIN ASSUMED)`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[LTV to CAC]`, title `LTV : CAC`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Monthly service revenue (৳ M)**: Clustered column chart. Position 258 / 292, Size 800 x 349. X-axis `Dim_Date[MonthName]`; Y-axis [Service Revenue]. Recipe R2, main color #FFC107. 
-- **ARPU trend (৳)**: Area chart. Position 1092 / 292, Size 800 x 349. X-axis `Dim_Date[MonthName]`; Y-axis [ARPU]. Recipe R3, main color #FF7A00. 
-- **Revenue mix**: Donut chart. Position 258 / 703, Size 522 x 349. Legend `_Mix[Service]`; Values [Mix Value]. Recipe R5. Needs table `_Mix` (Part A7).
-- **ARPU by network tech (৳)**: Clustered bar chart. Position 814 / 703, Size 522 x 349. Y-axis `Dim_Customers[Network]`; X-axis [ARPU]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Revenue by division (৳ M)**: Clustered bar chart. Position 1370 / 703, Size 522 x 349. Y-axis `Dim_Division[Division]`; X-axis [Service Revenue]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Monthly service revenue (৳ M)**, title `MONTHLY SERVICE REVENUE (৳ M)`: Clustered column chart. Position 248 / 254, Size 820 x 397. X-axis `Dim_Date[MonthName]`; Y-axis [Service Revenue]. Recipes R-BOX + R2, main color #FFC107. Display units: Millions.
+- **ARPU trend (৳)**, title `ARPU TREND (৳)`: Area chart. Position 1082 / 254, Size 820 x 397. X-axis `Dim_Date[MonthName]`; Y-axis [ARPU]. Recipes R-BOX + R3, main color #FF7A00. 
+- **Revenue mix**, title `REVENUE MIX`: Donut chart. Position 248 / 665, Size 542 x 397. Legend `_Mix[Service]`; Values [Mix Value]. Recipes R-BOX + R5. Needs table `_Mix` (A7).
+- **ARPU by network tech (৳)**, title `ARPU BY NETWORK TECH (৳)`: Clustered bar chart. Position 804 / 665, Size 542 x 397. Y-axis `Dim_Customers[Network]`; X-axis [ARPU]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Revenue by division (৳ M)**, title `REVENUE BY DIVISION (৳ M)`: Clustered bar chart. Position 1360 / 665, Size 542 x 397. Y-axis `Dim_Division[Division]`; X-axis [Service Revenue]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## Page 3: Subscribers & Churn
-Background file: `powerbi/backgrounds/03_sub.png`
+Page title text: `SUBSCRIBERS & CHURN`. Subtitle: `Acquisition, retention and churn drivers`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Total Subscribers]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[Active Subscribers]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[Churn Rate %]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[Monthly Churn Rate %]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[Total Subscribers]`, title `SUBSCRIBERS`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[Active Subscribers]`, title `ACTIVE`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[Churn Rate %]`, title `CHURN RATE`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[Monthly Churn Rate %]`, title `MONTHLY CHURN`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Gross adds vs churned**: Clustered column chart. Position 258 / 292, Size 800 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [Gross Adds], [Churned (by date)]. Recipe R2. Series colors: first measure #FFC107, second #E5262B. Legend On (top, font #C9C5BB).
-- **Net adds**: Clustered column chart. Position 1092 / 292, Size 800 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [Net Adds]. Recipe R2, main color #FFC107. 
-- **Churn type**: Donut chart. Position 258 / 566, Size 522 x 212. Legend `Fact_Subscriptions[ChurnType]`; Values [Churned Subscribers]. Recipe R5. 
-- **Churn by division %**: Clustered bar chart. Position 814 / 566, Size 522 x 212. Y-axis `Dim_Division[Division]`; X-axis [Churn Rate %]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Churn by network %**: Clustered bar chart. Position 1370 / 566, Size 522 x 212. Y-axis `Dim_Customers[Network]`; X-axis [Churn Rate %]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **Churn by ticket issue %**: Clustered bar chart. Position 258 / 840, Size 800 x 212. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Ticket Churn Rate %]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **OTT effect on churn %**: Clustered bar chart. Position 1092 / 840, Size 800 x 212. Y-axis `Dim_Customers[OTT User]`; X-axis [Churn Rate %]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Gross adds vs churned**, title `GROSS ADDS VS CHURNED`: Clustered column chart. Position 248 / 254, Size 820 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [Gross Adds], [Churned (by date)]. Recipes R-BOX + R2. Series colors: first measure #FFC107, second #E5262B. Legend On (top, #C9C5BB).
+- **Net adds**, title `NET ADDS`: Clustered column chart. Position 1082 / 254, Size 820 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [Net Adds]. Recipes R-BOX + R2, main color #FFC107. 
+- **Churn type**, title `CHURN TYPE`: Donut chart. Position 248 / 528, Size 542 x 260. Legend `Fact_Subscriptions[ChurnType]`; Values [Churned Subscribers]. Recipes R-BOX + R5. 
+- **Churn by division %**, title `CHURN BY DIVISION %`: Clustered bar chart. Position 804 / 528, Size 542 x 260. Y-axis `Dim_Division[Division]`; X-axis [Churn Rate %]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Churn by network %**, title `CHURN BY NETWORK %`: Clustered bar chart. Position 1360 / 528, Size 542 x 260. Y-axis `Dim_Customers[Network]`; X-axis [Churn Rate %]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Churn by ticket issue %**, title `CHURN BY TICKET ISSUE %`: Clustered bar chart. Position 248 / 802, Size 820 x 260. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Ticket Churn Rate %]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **OTT effect on churn %**, title `OTT EFFECT ON CHURN %`: Clustered bar chart. Position 1082 / 802, Size 820 x 260. Y-axis `Dim_Customers[OTT User]`; X-axis [Churn Rate %]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## Page 4: Network Performance
-Background file: `powerbi/backgrounds/04_net.png`
+Page title text: `NETWORK PERFORMANCE`. Subtitle: `Quality, capacity and outage KPIs by division`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Call Drop Rate %]`: Position 254 / 180, Size 307 x 54. Callout value color #FFC107.
-- Card `[CSSR %]`: Position 587 / 180, Size 307 x 54. Callout value color #FF7A00.
-- Card `[Avg Throughput Mbps]`: Position 921 / 180, Size 307 x 54. Callout value color #E5262B.
-- Card `[Site Availability %]`: Position 1254 / 180, Size 307 x 54. Callout value color #FFC107.
-- Card `[MTTR min]`: Position 1588 / 180, Size 307 x 54. Callout value color #FF7A00.
+- Card `[Call Drop Rate %]`, title `CALL DROP`: Position 248 / 152, Size 319 x 88. Callout color #FFC107. Color strip: rectangle 319 x 3 at 248 / 152, fill #FFC107.
+- Card `[CSSR %]`, title `CSSR`: Position 581 / 152, Size 319 x 88. Callout color #FF7A00. Color strip: rectangle 319 x 3 at 581 / 152, fill #FF7A00.
+- Card `[Avg Throughput Mbps]`, title `THROUGHPUT`: Position 915 / 152, Size 319 x 88. Callout color #E5262B. Color strip: rectangle 319 x 3 at 915 / 152, fill #E5262B.
+- Card `[Site Availability %]`, title `AVAILABILITY`: Position 1248 / 152, Size 319 x 88. Callout color #FFC107. Color strip: rectangle 319 x 3 at 1248 / 152, fill #FFC107.
+- Card `[MTTR min]`, title `MTTR`: Position 1582 / 152, Size 319 x 88. Callout color #FF7A00. Color strip: rectangle 319 x 3 at 1582 / 152, fill #FF7A00.
 
 **Panels**
 
-- **Call drop heatmap: division x month (%)**: Matrix. Position 258 / 292, Size 1634 x 143. Rows `Dim_Division[Division]`; Columns `Dim_Date[MonthName]`; Values `[Call Drop Rate %]`. Recipe R6. 
-- **Call drop trend (%)**: Area chart. Position 258 / 497, Size 800 x 143. X-axis `Dim_Date[MonthName]`; Y-axis [Call Drop Rate %]. Recipe R3, main color #E5262B. 
-- **Outages per month**: Clustered column chart. Position 1092 / 497, Size 800 x 143. X-axis `Dim_Date[MonthName]`; Y-axis [Outage Count]. Recipe R2, main color #FF7A00. 
-- **Outage causes**: Donut chart. Position 258 / 703, Size 522 x 143. Legend `Fact_Network_Outages[Cause]`; Values [Outage Count]. Recipe R5. 
-- **MTTR by cause (min)**: Clustered bar chart. Position 814 / 703, Size 522 x 143. Y-axis `Fact_Network_Outages[Cause]`; X-axis [MTTR min]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **Most congested sites (PRB %)**: Clustered bar chart. Position 1370 / 703, Size 522 x 143. Y-axis `Dim_Towers[SiteID]`; X-axis [Avg PRB Utilization] (Top N 8). Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending. Filters pane > this visual > drag the category field > Filter type Top N > Show items Top 8 > By value: the measure > Apply filter.
-- **Throughput by area (Mbps)**: Clustered bar chart. Position 258 / 908, Size 800 x 143. Y-axis `Dim_Towers[Area]`; X-axis [Avg Throughput Mbps]. Recipe R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
-- **Availability by division %**: Clustered bar chart. Position 1092 / 908, Size 800 x 143. Y-axis `Dim_Division[Division]`; X-axis [Site Availability %]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Call drop heatmap: division x month (%)**, title `CALL DROP HEATMAP: DIVISION X MONTH (%)`: Matrix. Position 248 / 254, Size 1654 x 191. Rows `Dim_Division[Division]`; Columns `Dim_Date[MonthName]`; Values `[Call Drop Rate %]`. Recipes R-BOX + R6. 
+- **Call drop trend (%)**, title `CALL DROP TREND (%)`: Area chart. Position 248 / 459, Size 820 x 191. X-axis `Dim_Date[MonthName]`; Y-axis [Call Drop Rate %]. Recipes R-BOX + R3, main color #E5262B. 
+- **Outages per month**, title `OUTAGES PER MONTH`: Clustered column chart. Position 1082 / 459, Size 820 x 191. X-axis `Dim_Date[MonthName]`; Y-axis [Outage Count]. Recipes R-BOX + R2, main color #FF7A00. 
+- **Outage causes**, title `OUTAGE CAUSES`: Donut chart. Position 248 / 665, Size 542 x 191. Legend `Fact_Network_Outages[Cause]`; Values [Outage Count]. Recipes R-BOX + R5. 
+- **MTTR by cause (min)**, title `MTTR BY CAUSE (MIN)`: Clustered bar chart. Position 804 / 665, Size 542 x 191. Y-axis `Fact_Network_Outages[Cause]`; X-axis [MTTR min]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Most congested sites (PRB %)**, title `MOST CONGESTED SITES (PRB %)`: Clustered bar chart. Position 1360 / 665, Size 542 x 191. Y-axis `Dim_Towers[SiteID]`; X-axis [Avg PRB Utilization] (Top N 8). Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending. Filters pane > this visual > drag the category field in > Filter type Top N > Show items Top 8 > By value: the measure > Apply filter.
+- **Throughput by area (Mbps)**, title `THROUGHPUT BY AREA (MBPS)`: Clustered bar chart. Position 248 / 870, Size 820 x 191. Y-axis `Dim_Towers[Area]`; X-axis [Avg Throughput Mbps]. Recipes R-BOX + R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
+- **Availability by division %**, title `AVAILABILITY BY DIVISION %`: Clustered bar chart. Position 1082 / 870, Size 820 x 191. Y-axis `Dim_Division[Division]`; X-axis [Site Availability %]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## Page 5: Customer Experience
-Background file: `powerbi/backgrounds/05_cx.png`
+Page title text: `CUSTOMER EXPERIENCE`. Subtitle: `Satisfaction, support quality and SLA`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[NPS]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[Avg CSAT]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[FCR %]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[SLA Compliance %]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[NPS]`, title `NPS`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[Avg CSAT]`, title `CSAT (1-5)`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[FCR %]`, title `FIRST-CONTACT RESOLUTION`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[SLA Compliance %]`, title `SLA MET`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Tickets per month**: Clustered column chart. Position 258 / 292, Size 800 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [Ticket Count]. Recipe R2, main color #FF7A00. 
-- **NPS mix**: Donut chart. Position 1092 / 292, Size 383 x 212. Legend `_NPS[Group]`; Values [NPS Group Count]. Recipe R5. Needs table `_NPS` (Part A7).
-- **Ticket channels**: Donut chart. Position 1509 / 292, Size 383 x 212. Legend `Fact_Network_Service_Calls[TicketChannel]`; Values [Ticket Count]. Recipe R5. 
-- **CSAT by issue**: Clustered bar chart. Position 258 / 566, Size 522 x 212. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Avg CSAT]. Recipe R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
-- **FCR % by channel**: Clustered bar chart. Position 814 / 566, Size 522 x 212. Y-axis `Fact_Network_Service_Calls[TicketChannel]`; X-axis [FCR %]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **SLA % by issue**: Clustered bar chart. Position 1370 / 566, Size 522 x 212. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [SLA Compliance %]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Resolution time (min)**: Clustered bar chart. Position 258 / 840, Size 1634 x 212. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Avg Ticket Resolution]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Tickets per month**, title `TICKETS PER MONTH`: Clustered column chart. Position 248 / 254, Size 820 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [Ticket Count]. Recipes R-BOX + R2, main color #FF7A00. 
+- **NPS mix**, title `NPS MIX`: Donut chart. Position 1082 / 254, Size 403 x 260. Legend `_NPS[Group]`; Values [NPS Group Count]. Recipes R-BOX + R5. Needs table `_NPS` (A7).
+- **Ticket channels**, title `TICKET CHANNELS`: Donut chart. Position 1499 / 254, Size 403 x 260. Legend `Fact_Network_Service_Calls[TicketChannel]`; Values [Ticket Count]. Recipes R-BOX + R5. 
+- **CSAT by issue**, title `CSAT BY ISSUE`: Clustered bar chart. Position 248 / 528, Size 542 x 260. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Avg CSAT]. Recipes R-BOX + R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
+- **FCR % by channel**, title `FCR % BY CHANNEL`: Clustered bar chart. Position 804 / 528, Size 542 x 260. Y-axis `Fact_Network_Service_Calls[TicketChannel]`; X-axis [FCR %]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **SLA % by issue**, title `SLA % BY ISSUE`: Clustered bar chart. Position 1360 / 528, Size 542 x 260. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [SLA Compliance %]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Resolution time (min)**, title `RESOLUTION TIME (MIN)`: Clustered bar chart. Position 248 / 802, Size 1654 x 260. Y-axis `Fact_Network_Service_Calls[IssueCategory]`; X-axis [Avg Ticket Resolution]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## Page 6: Usage & Digital
-Background file: `powerbi/backgrounds/06_use.png`
+Page title text: `USAGE & DIGITAL`. Subtitle: `Data, voice and OTT engagement`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[MOU]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[Data per Sub GB]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[Total Data Consumed TB]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[Streaming Ad Spend]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[MOU]`, title `VOICE MIN / SUB`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[Data per Sub GB]`, title `DATA GB / SUB`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[Total Data Consumed TB]`, title `STREAMED`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[Streaming Ad Spend]`, title `OTT AD SPEND`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Data per subscriber (GB)**: Area chart. Position 258 / 292, Size 800 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [Data per Sub GB]. Recipe R3, main color #FFC107. 
-- **Voice minutes per subscriber**: Area chart. Position 1092 / 292, Size 800 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [MOU]. Recipe R3, main color #FF7A00. 
-- **Network mix**: Donut chart. Position 258 / 566, Size 522 x 212. Legend `Dim_Customers[Network]`; Values [Total Subscribers]. Recipe R5. 
-- **Streaming by platform (GB)**: Clustered bar chart. Position 814 / 566, Size 522 x 212. Y-axis `Fact_Digital_Streaming_VAS[Platform]`; X-axis [Streaming GB]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **Ad spend per GB (৳)**: Clustered bar chart. Position 1370 / 566, Size 522 x 212. Y-axis `Fact_Digital_Streaming_VAS[Platform]`; X-axis [Ad Cost per GB]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Monthly streaming (GB)**: Clustered column chart. Position 258 / 840, Size 1634 x 212. X-axis `Dim_Date[MonthName]`; Y-axis [Streaming GB]. Recipe R2, main color #FF7A00. 
+- **Data per subscriber (GB)**, title `DATA PER SUBSCRIBER (GB)`: Area chart. Position 248 / 254, Size 820 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [Data per Sub GB]. Recipes R-BOX + R3, main color #FFC107. 
+- **Voice minutes per subscriber**, title `VOICE MINUTES PER SUBSCRIBER`: Area chart. Position 1082 / 254, Size 820 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [MOU]. Recipes R-BOX + R3, main color #FF7A00. 
+- **Network mix**, title `NETWORK MIX`: Donut chart. Position 248 / 528, Size 542 x 260. Legend `Dim_Customers[Network]`; Values [Total Subscribers]. Recipes R-BOX + R5. 
+- **Streaming by platform (GB)**, title `STREAMING BY PLATFORM (GB)`: Clustered bar chart. Position 804 / 528, Size 542 x 260. Y-axis `Fact_Digital_Streaming_VAS[Platform]`; X-axis [Streaming GB]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Ad spend per GB (৳)**, title `AD SPEND PER GB (৳)`: Clustered bar chart. Position 1360 / 528, Size 542 x 260. Y-axis `Fact_Digital_Streaming_VAS[Platform]`; X-axis [Ad Cost per GB]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Monthly streaming (GB)**, title `MONTHLY STREAMING (GB)`: Clustered column chart. Position 248 / 802, Size 1654 x 260. X-axis `Dim_Date[MonthName]`; Y-axis [Streaming GB]. Recipes R-BOX + R2, main color #FF7A00. 
 
 ## Page 7: Billing & Collections
-Background file: `powerbi/backgrounds/07_bill.png`
+Page title text: `BILLING & COLLECTIONS`. Subtitle: `Postpaid invoicing, collections and bad debt`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Collection Efficiency %]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[Bad Debt %]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[Overdue Amount]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[Billed]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[Collection Efficiency %]`, title `COLLECTION EFFICIENCY`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[Bad Debt %]`, title `BAD DEBT`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[Overdue Amount]`, title `OVERDUE`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[Billed]`, title `BILLED`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Collection efficiency (%)**: Area chart. Position 258 / 292, Size 800 x 349. X-axis `Dim_Date[MonthName]`; Y-axis [Collection Efficiency %]. Recipe R3, main color #FFC107. 
-- **Overdue aging (৳ M)**: Clustered column chart. Position 1092 / 292, Size 800 x 349. X-axis `Fact_Billing[Aging Bucket]`; Y-axis [Overdue Amount] (filter out Paid). Recipe R2, main color #E5262B. Filters pane > this visual > `Aging Bucket` > Basic filtering > untick `Paid`. Sort axis > Aging Bucket > Sort ascending (alphabetical order is already 1-30d, 31-60d, 61-90d, 90d+).
-- **Collection gauge**: Gauge. Position 258 / 703, Size 522 x 349. Value `[Collection Efficiency %]`; Minimum 0; Maximum 1; Target 0.95. Recipe R7. 
-- **Bad debt % by division**: Clustered bar chart. Position 814 / 703, Size 522 x 349. Y-axis `Dim_Division[Division]`; X-axis [Bad Debt %]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Collection % by division**: Clustered bar chart. Position 1370 / 703, Size 522 x 349. Y-axis `Dim_Division[Division]`; X-axis [Collection Efficiency %]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Collection efficiency (%)**, title `COLLECTION EFFICIENCY (%)`: Area chart. Position 248 / 254, Size 820 x 397. X-axis `Dim_Date[MonthName]`; Y-axis [Collection Efficiency %]. Recipes R-BOX + R3, main color #FFC107. 
+- **Overdue aging (৳ M)**, title `OVERDUE AGING (৳ M)`: Clustered column chart. Position 1082 / 254, Size 820 x 397. X-axis `Fact_Billing[Aging Bucket]`; Y-axis [Overdue Amount] (filter out Paid). Recipes R-BOX + R2, main color #E5262B. Filters pane > this visual > `Aging Bucket` > Basic filtering > untick `Paid`. Sort axis > Aging Bucket > Sort ascending (alphabetical order is already 1-30d, 31-60d, 61-90d, 90d+).
+- **Collection gauge**, title `COLLECTION GAUGE`: Gauge. Position 248 / 665, Size 542 x 397. Value `[Collection Efficiency %]`; Minimum 0; Maximum 1; Target 0.95. Recipes R-BOX + R7. 
+- **Bad debt % by division**, title `BAD DEBT % BY DIVISION`: Clustered bar chart. Position 804 / 665, Size 542 x 397. Y-axis `Dim_Division[Division]`; X-axis [Bad Debt %]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Collection % by division**, title `COLLECTION % BY DIVISION`: Clustered bar chart. Position 1360 / 665, Size 542 x 397. Y-axis `Dim_Division[Division]`; X-axis [Collection Efficiency %]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## Page 8: Sales & Distribution
-Background file: `powerbi/backgrounds/08_mkt.png`
+Page title text: `SALES & DISTRIBUTION`. Subtitle: `Campaign efficiency, channels and distributors`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Campaign CAC]`: Position 254 / 180, Size 530 x 54. Callout value color #FFC107.
-- Card `[Campaign ROI]`: Position 810 / 180, Size 530 x 54. Callout value color #FF7A00.
-- Card `[LTV to CAC]`: Position 1366 / 180, Size 530 x 54. Callout value color #E5262B.
+- Card `[Campaign CAC]`, title `CAC`: Position 248 / 152, Size 542 x 88. Callout color #FFC107. Color strip: rectangle 542 x 3 at 248 / 152, fill #FFC107.
+- Card `[Campaign ROI]`, title `CAMPAIGN ROI`: Position 804 / 152, Size 542 x 88. Callout color #FF7A00. Color strip: rectangle 542 x 3 at 804 / 152, fill #FF7A00.
+- Card `[LTV to CAC]`, title `LTV : CAC`: Position 1360 / 152, Size 542 x 88. Callout color #E5262B. Color strip: rectangle 542 x 3 at 1360 / 152, fill #E5262B.
 
 **Panels**
 
-- **Campaign spend (৳ M)**: Clustered column chart. Position 258 / 292, Size 800 x 349. X-axis `Dim_Date[MonthName]`; Y-axis [Campaign Spend]. Recipe R2, main color #FF7A00. 
-- **Acquisition channels**: Donut chart. Position 1092 / 292, Size 383 x 349. Legend `Fact_Subscriptions[AcquisitionChannel]`; Values [Gross Adds]. Recipe R5. 
-- **Top-up by distributor tier**: Donut chart. Position 1509 / 292, Size 383 x 349. Legend `Dim_Distributors[Tier]`; Values [Recharge Sales]. Recipe R5. 
-- **CAC by channel (৳)**: Clustered bar chart. Position 258 / 703, Size 522 x 349. Y-axis `Fact_Marketing_Campaigns[Channel]`; X-axis [Campaign CAC]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **ROI by channel (x)**: Clustered bar chart. Position 814 / 703, Size 522 x 349. Y-axis `Fact_Marketing_Campaigns[Channel]`; X-axis [Campaign ROI]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **Top distributors (৳ K)**: Clustered bar chart. Position 1370 / 703, Size 522 x 349. Y-axis `Dim_Distributors[Name]`; X-axis [Recharge Sales] (Top N 8). Recipe R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending. Filters pane > this visual > drag the category field > Filter type Top N > Show items Top 8 > By value: the measure > Apply filter.
+- **Campaign spend (৳ M)**, title `CAMPAIGN SPEND (৳ M)`: Clustered column chart. Position 248 / 254, Size 820 x 397. X-axis `Dim_Date[MonthName]`; Y-axis [Campaign Spend]. Recipes R-BOX + R2, main color #FF7A00. 
+- **Acquisition channels**, title `ACQUISITION CHANNELS`: Donut chart. Position 1082 / 254, Size 403 x 397. Legend `Fact_Subscriptions[AcquisitionChannel]`; Values [Gross Adds]. Recipes R-BOX + R5. 
+- **Top-up by distributor tier**, title `TOP-UP BY DISTRIBUTOR TIER`: Donut chart. Position 1499 / 254, Size 403 x 397. Legend `Dim_Distributors[Tier]`; Values [Recharge Sales]. Recipes R-BOX + R5. 
+- **CAC by channel (৳)**, title `CAC BY CHANNEL (৳)`: Clustered bar chart. Position 248 / 665, Size 542 x 397. Y-axis `Fact_Marketing_Campaigns[Channel]`; X-axis [Campaign CAC]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **ROI by channel (x)**, title `ROI BY CHANNEL (X)`: Clustered bar chart. Position 804 / 665, Size 542 x 397. Y-axis `Fact_Marketing_Campaigns[Channel]`; X-axis [Campaign ROI]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Top distributors (৳ K)**, title `TOP DISTRIBUTORS (৳ K)`: Clustered bar chart. Position 1360 / 665, Size 542 x 397. Y-axis `Dim_Distributors[Name]`; X-axis [Recharge Sales] (Top N 8). Recipes R-BOX + R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending. Filters pane > this visual > drag the category field in > Filter type Top N > Show items Top 8 > By value: the measure > Apply filter.
 
 ## Page 9: Workforce
-Background file: `powerbi/backgrounds/09_hr.png`
+Page title text: `WORKFORCE`. Subtitle: `Agent productivity, retention and distribution`.
 
-**Slicers** (recipe R1; add the first one, then copy it to the other pages, see C-Sync):
+**Slicers** (recipes R-BOX + R1; Title Off for slicers because the header shows the label):
 
-- Slicer `Dim_Division[Division]`: Tile, horizontal. Position 254 / 110, Size 728 x 30.
-- Slicer `Dim_Customers[Network]`: Tile, horizontal. Position 1006 / 110, Size 198 x 30.
-- Slicer `Dim_Customers[Segment]`: Tile, horizontal. Position 1228 / 110, Size 198 x 30.
-- Slicer `Dim_Date[MonthName]`: Dropdown, multi-select. Position 1450 / 110, Size 446 x 30.
+- Slicer `Dim_Division[Division]`, header `DIVISION`: Tile, horizontal. Position 248 / 96, Size 740 x 46.
+- Slicer `Dim_Customers[Network]`, header `NETWORK`: Tile, horizontal. Position 1000 / 96, Size 210 x 46.
+- Slicer `Dim_Customers[Segment]`, header `SEGMENT`: Tile, horizontal. Position 1222 / 96, Size 210 x 46.
+- Slicer `Dim_Date[MonthName]`, header `MONTH`: Dropdown, multi-select. Position 1444 / 96, Size 458 x 46.
 
 **KPI cards** (recipe R0):
 
-- Card `[Headcount]`: Position 254 / 180, Size 391 x 54. Callout value color #FFC107.
-- Card `[Employee Turnover %]`: Position 671 / 180, Size 391 x 54. Callout value color #FF7A00.
-- Card `[Avg Performance Rating]`: Position 1088 / 180, Size 391 x 54. Callout value color #E5262B.
-- Card `[Tickets per Agent]`: Position 1505 / 180, Size 391 x 54. Callout value color #FFC107.
+- Card `[Headcount]`, title `HEADCOUNT`: Position 248 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 248 / 152, fill #FFC107.
+- Card `[Employee Turnover %]`, title `TURNOVER`: Position 665 / 152, Size 403 x 88. Callout color #FF7A00. Color strip: rectangle 403 x 3 at 665 / 152, fill #FF7A00.
+- Card `[Avg Performance Rating]`, title `AVG RATING`: Position 1082 / 152, Size 403 x 88. Callout color #E5262B. Color strip: rectangle 403 x 3 at 1082 / 152, fill #E5262B.
+- Card `[Tickets per Agent]`, title `TICKETS / AGENT`: Position 1499 / 152, Size 403 x 88. Callout color #FFC107. Color strip: rectangle 403 x 3 at 1499 / 152, fill #FFC107.
 
 **Panels**
 
-- **Resolution by dept (min)**: Clustered bar chart. Position 258 / 292, Size 522 x 349. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg Ticket Resolution]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **CSAT by dept**: Clustered bar chart. Position 814 / 292, Size 522 x 349. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg CSAT]. Recipe R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
-- **Turnover % by dept**: Clustered bar chart. Position 1370 / 292, Size 522 x 349. Y-axis `Dim_Employees_HR[Department]`; X-axis [Employee Turnover %]. Recipe R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
-- **Performance mix**: Donut chart. Position 258 / 703, Size 522 x 349. Legend `Dim_Employees_HR[PerformanceRating]`; Values [Headcount]. Recipe R5. 
-- **Headcount by division**: Clustered bar chart. Position 814 / 703, Size 522 x 349. Y-axis `Dim_Division[Division]`; X-axis [Headcount]. Recipe R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
-- **Avg salary by dept (৳ K)**: Clustered bar chart. Position 1370 / 703, Size 522 x 349. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg Salary]. Recipe R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
+- **Resolution by dept (min)**, title `RESOLUTION BY DEPT (MIN)`: Clustered bar chart. Position 248 / 254, Size 542 x 397. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg Ticket Resolution]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **CSAT by dept**, title `CSAT BY DEPT`: Clustered bar chart. Position 804 / 254, Size 542 x 397. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg CSAT]. Recipes R-BOX + R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
+- **Turnover % by dept**, title `TURNOVER % BY DEPT`: Clustered bar chart. Position 1360 / 254, Size 542 x 397. Y-axis `Dim_Employees_HR[Department]`; X-axis [Employee Turnover %]. Recipes R-BOX + R4, main color #E5262B. Sort: ... > Sort axis > the measure > Sort descending.
+- **Performance mix**, title `PERFORMANCE MIX`: Donut chart. Position 248 / 665, Size 542 x 397. Legend `Dim_Employees_HR[PerformanceRating]`; Values [Headcount]. Recipes R-BOX + R5. 
+- **Headcount by division**, title `HEADCOUNT BY DIVISION`: Clustered bar chart. Position 804 / 665, Size 542 x 397. Y-axis `Dim_Division[Division]`; X-axis [Headcount]. Recipes R-BOX + R4, main color #FF7A00. Sort: ... > Sort axis > the measure > Sort descending.
+- **Avg salary by dept (৳ K)**, title `AVG SALARY BY DEPT (৳ K)`: Clustered bar chart. Position 1360 / 665, Size 542 x 397. Y-axis `Dim_Employees_HR[Department]`; X-axis [Avg Salary]. Recipes R-BOX + R4, main color #FFC107. Sort: ... > Sort axis > the measure > Sort descending.
 
 ## C-Sync. Make the slicers work on every page
-1. On page 1 select the Division slicer > View > Sync slicers > in the pane tick every page in BOTH the Sync and Visible columns.
+1. On page 1 select the Division slicer > **View > Sync slicers** > in the pane tick every page in BOTH the Sync and Visible columns.
 2. Repeat for the Network, Segment and Month slicers.
-3. Copy/paste a slicer to other pages only if you prefer; with Sync slicers you add each slicer once per page anyway (Ctrl+C on page 1, Ctrl+V on page 2 pastes at the same position).
-
-## C-Nav. Page navigator
-Page 1 > Insert > Buttons > Navigator > Page navigator. Position 12 / 100, Size 206 x 560. Format visual > Style > Text: font Segoe UI 12, color #F5F1E8. Fill: Default #14110A, Hover #FF7A00 (text #000000), Selected #FF7A00 at 30% transparency 70. Shape > Round corners 8. Layout > Orientation Vertical, Padding 6. Copy it to all 9 pages (same position). Rename the pages first so the labels read well (Command Center, Revenue & ARPU, Subscribers & Churn, Network Performance, Customer Experience, Usage & Digital, Billing & Collections, Sales & Distribution, Workforce).
+3. On pages 2 to 9 the four slicers must exist (Visible column). Fastest way: copy the 4 slicers on page 1, paste them on each other page (same position), then check Sync slicers once.
 
 
 ---
@@ -385,7 +394,7 @@ Page 1 > Insert > Buttons > Navigator > Page navigator. Position 12 / 100, Size 
 | NPS | 20.3 |
 | Call Drop Rate % | 0.99 |
 | Collection Efficiency % | 90.7% |
-| With Division = Dhaka: Total Subscribers / Churn | 2,736 / 14.55% |
+| Division = Dhaka: Total Subscribers / Churn | 2,736 / 14.55% |
 | Division = Dhaka and Network = 5G: Total Subscribers | 668 |
 
 If a value is off: check A4 (relationships), A9 step 3 (date filter), and that Dim_Date is marked as a date table.
