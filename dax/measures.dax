@@ -1,0 +1,96 @@
+// ===== Setup: create a blank table "_Key_Metrics" (Enter Data) and add every measure below =====
+// ===== Helper tables (Modeling > New table) =====
+_Mix = DATATABLE("Service", STRING, {{"Voice"},{"Data"},{"SMS"},{"VAS"}})
+_NPS = DATATABLE("Group", STRING, {{"Promoters"},{"Passives"},{"Detractors"}})
+// ===== Calculated columns =====
+// Dim_Customers:      OTT User = IF(COUNTROWS(RELATEDTABLE(Fact_Digital_Streaming_VAS)) > 0, "With OTT", "No OTT")
+// Fact_Billing:       Aging Bucket = SWITCH(TRUE(), Fact_Billing[Paid_BDT] >= Fact_Billing[Billed_BDT], "Paid", Fact_Billing[DaysLate] <= 30, "1-30d", Fact_Billing[DaysLate] <= 60, "31-60d", Fact_Billing[DaysLate] <= 90, "61-90d", "90d+")
+
+// ===== Subscribers =====
+Total Subscribers = COUNTROWS(Dim_Customers)
+Active Subscribers = CALCULATE(COUNTROWS(Dim_Customers), Dim_Customers[IsChurned] = 0)
+Churned Subscribers = CALCULATE(COUNTROWS(Dim_Customers), Dim_Customers[IsChurned] = 1)
+Churn Rate % = DIVIDE([Churned Subscribers], [Total Subscribers], 0)
+Monthly Churn Rate % = DIVIDE([Churned Subscribers], COUNTROWS(Fact_Usage_Monthly), 0)
+Gross Adds = COUNTROWS(Fact_Subscriptions)   // uses the active Dim_Date -> ActivationDate relationship
+Churned (by date) = CALCULATE(COUNTROWS(Fact_Subscriptions), Fact_Subscriptions[ChurnDate] <> BLANK(), USERELATIONSHIP(Dim_Date[Date], Fact_Subscriptions[ChurnDate]))
+Net Adds = [Gross Adds] - [Churned (by date)]
+
+// ===== Revenue & unit economics =====
+Voice Revenue = SUM(Fact_Usage_Monthly[VoiceRev])
+Data Revenue = SUM(Fact_Usage_Monthly[DataRev])
+SMS Revenue = SUM(Fact_Usage_Monthly[SMSRev])
+VAS Revenue = SUM(Fact_Usage_Monthly[VASRev])
+Service Revenue = [Voice Revenue] + [Data Revenue] + [SMS Revenue] + [VAS Revenue]
+Mix Value = SWITCH(SELECTEDVALUE(_Mix[Service]), "Voice", [Voice Revenue], "Data", [Data Revenue], "SMS", [SMS Revenue], "VAS", [VAS Revenue])
+ARPU = DIVIDE([Service Revenue], COUNTROWS(Fact_Usage_Monthly), 0)   // revenue per active subscriber-month
+Gross Margin % = 0.35   // ASSUMPTION - change or replace with a What-if parameter
+LTV = DIVIDE([ARPU] * [Gross Margin %], [Monthly Churn Rate %], 0)
+Campaign CAC = DIVIDE(SUM(Fact_Marketing_Campaigns[Spend_BDT]), SUM(Fact_Marketing_Campaigns[Conversions]), 0)
+LTV to CAC = DIVIDE([LTV], [Campaign CAC], 0)
+Campaign ROI = DIVIDE(SUM(Fact_Marketing_Campaigns[RevenueGenerated_BDT]), SUM(Fact_Marketing_Campaigns[Spend_BDT]), 0)
+Recharge Sales = SUM(Fact_Recharge_Sales[Amount_BDT])
+
+// ===== Usage & digital =====
+MOU = AVERAGE(Fact_Usage_Monthly[VoiceMin])
+Data per Sub GB = AVERAGE(Fact_Usage_Monthly[DataGB])
+Total Data Consumed TB = SUM(Fact_Digital_Streaming_VAS[DataConsumed_GB]) / 1024
+Streaming Ad Spend = SUM(Fact_Digital_Streaming_VAS[AdSpend_BDT])
+Ad Cost per GB = DIVIDE([Streaming Ad Spend], SUM(Fact_Digital_Streaming_VAS[DataConsumed_GB]), 0)
+
+// ===== Network =====
+Call Drop Rate % = AVERAGE(Fact_Network_Performance[CallDropRate_Pct])
+CSSR % = AVERAGE(Fact_Network_Performance[CSSR_Pct])
+Avg Throughput Mbps = AVERAGE(Fact_Network_Performance[Throughput_Mbps])
+Site Availability % = AVERAGE(Fact_Network_Performance[Availability_Pct])
+Avg PRB Utilization = AVERAGE(Fact_Network_Performance[PRB_Utilization_Pct])
+Congested Site-Weeks % = DIVIDE(COUNTROWS(FILTER(Fact_Network_Performance, Fact_Network_Performance[PRB_Utilization_Pct] > 80)), COUNTROWS(Fact_Network_Performance), 0)
+Outage Count = COUNTROWS(Fact_Network_Outages)
+MTTR min = AVERAGE(Fact_Network_Outages[DurationMin])
+Customers Impacted = SUM(Fact_Network_Outages[CustomersImpacted])
+Avg Latency ms = AVERAGE(Fact_Network_Service_Calls[Latency_ms])
+
+// ===== Customer experience =====
+NPS = DIVIDE(COUNTROWS(FILTER(Dim_Customers, Dim_Customers[NPS_Score] >= 9)) - COUNTROWS(FILTER(Dim_Customers, Dim_Customers[NPS_Score] <= 6)), [Total Subscribers], 0) * 100
+NPS Group Count = SWITCH(SELECTEDVALUE(_NPS[Group]), "Promoters", COUNTROWS(FILTER(Dim_Customers, Dim_Customers[NPS_Score] >= 9)), "Passives", COUNTROWS(FILTER(Dim_Customers, Dim_Customers[NPS_Score] >= 7 && Dim_Customers[NPS_Score] <= 8)), "Detractors", COUNTROWS(FILTER(Dim_Customers, Dim_Customers[NPS_Score] <= 6)))
+Ticket Count = COUNTROWS(Fact_Network_Service_Calls)
+Avg CSAT = AVERAGE(Fact_Network_Service_Calls[SatisfactionScore])
+FCR % = AVERAGE(Fact_Network_Service_Calls[FirstContactResolved])
+SLA Compliance % = AVERAGE(Fact_Network_Service_Calls[SLA_Met])
+Avg Ticket Resolution = AVERAGE(Fact_Network_Service_Calls[ResolutionTimeMinutes])
+
+// ===== Billing & collections (postpaid) =====
+Billed = SUM(Fact_Billing[Billed_BDT])
+Collected = SUM(Fact_Billing[Paid_BDT])
+Collection Efficiency % = DIVIDE([Collected], [Billed], 0)
+Overdue Amount = SUMX(Fact_Billing, Fact_Billing[Billed_BDT] - Fact_Billing[Paid_BDT])
+Bad Debt % = DIVIDE(SUM(Fact_Billing[WrittenOff_BDT]), [Billed], 0)
+
+// ===== Workforce =====
+Headcount = CALCULATE(COUNTROWS(Dim_Employees_HR), TREATAS(VALUES(Dim_Division[Division]), Dim_Employees_HR[Division]))
+Employee Turnover % = CALCULATE(AVERAGE(Dim_Employees_HR[LeftCompany]), TREATAS(VALUES(Dim_Division[Division]), Dim_Employees_HR[Division]))
+Avg Performance Rating = CALCULATE(AVERAGE(Dim_Employees_HR[PerformanceRating]), TREATAS(VALUES(Dim_Division[Division]), Dim_Employees_HR[Division]))
+Tickets per Agent = DIVIDE(COUNTROWS(Fact_Network_Service_Calls), DISTINCTCOUNT(Fact_Network_Service_Calls[EmployeeID]), 0)
+
+// ===== Geography / density (use with Dim_Division) =====
+Subscriber Density = DIVIDE([Total Subscribers], SUM(Dim_Division[Area_km2])) * 100          // per 100 km2
+Population Density = DIVIDE(SUM(Dim_Division[Population_M]) * 1000000, SUM(Dim_Division[Area_km2]))
+Tower Density = DIVIDE(DISTINCTCOUNT(Dim_Towers[SiteID]), SUM(Dim_Division[Area_km2])) * 1000  // per 1000 km2
+
+// ===== Added for the reactive pages =====
+// Fact_Network_Service_Calls calculated column:  Customer Churned = RELATED(Dim_Customers[IsChurned])
+Ticket Churn Rate % = AVERAGE(Fact_Network_Service_Calls[Customer Churned])
+Streaming GB = SUM(Fact_Digital_Streaming_VAS[DataConsumed_GB])
+Campaign Spend = SUM(Fact_Marketing_Campaigns[Spend_BDT])
+Avg Salary = CALCULATE(AVERAGE(Dim_Employees_HR[MonthlySalary]), TREATAS(VALUES(Dim_Division[Division]), Dim_Employees_HR[Division]))
+// Map metric selector: Modeling > New table
+_MapMetric = DATATABLE("Metric", STRING, {{"Subscriber density"},{"Population density"},{"Tower density"},{"Churn %"},{"Call drop %"},{"ARPU"},{"Throughput Mbps"}})
+Map Metric Value = SWITCH(SELECTEDVALUE(_MapMetric[Metric], "Subscriber density"),
+  "Subscriber density", [Subscriber Density], "Population density", [Population Density], "Tower density", [Tower Density],
+  "Churn %", [Churn Rate %] * 100, "Call drop %", [Call Drop Rate %], "ARPU", [ARPU], "Throughput Mbps", [Avg Throughput Mbps])
+// Live insight sentences (Multi-row card on the Command Center)
+Insight Drop = VAR t = TOPN(1, ALL(Dim_Division[Division]), [Call Drop Rate %], DESC) RETURN MAXX(t, Dim_Division[Division]) & " has the highest call drop (" & FORMAT(MAXX(t, [Call Drop Rate %]), "0.00") & "%)"
+Insight Density = VAR t = TOPN(1, ALL(Dim_Division[Division]), [Subscriber Density], DESC) RETURN MAXX(t, Dim_Division[Division]) & " is the densest division (" & FORMAT(MAXX(t, [Subscriber Density]), "0.0") & " subs per 100 km2)"
+Insight Churn = VAR t = TOPN(1, ALL(Dim_Division[Division]), [Churn Rate %], DESC) RETURN MAXX(t, Dim_Division[Division]) & " has the highest churn (" & FORMAT(MAXX(t, [Churn Rate %]), "0.0%") & ")"
+Insight Collections = "Collections at " & FORMAT([Collection Efficiency %], "0.0%") & ", overdue " & FORMAT([Overdue Amount] / 1000000, "0.0") & "M BDT"
+Retention % = 1 - [Churn Rate %]

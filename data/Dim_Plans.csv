@@ -1,0 +1,6 @@
+PlanName,Segment,MonthlyPrice_BDT,DataAllowance_GB,ValidityDays
+Unlimited Data Max,Prepaid,999,100,30
+Prepaid Saver 30D,Prepaid,349,30,30
+Postpaid Corporate,Postpaid,1499,150,30
+Student Special 4G,Prepaid,199,20,30
+Family Bundle,Postpaid,1199,120,30

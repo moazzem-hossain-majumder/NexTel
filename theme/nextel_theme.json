@@ -1,0 +1,5 @@
+{"name":"NexTel Black-Orange-Red","dataColors":["#FFC107","#FF7A00","#E5262B","#9A6A00","#5B616B","#C4891A","#FF9E57","#A31A1E"],
+"background":"#0E0B08","foreground":"#F5F1E8","tableAccent":"#FF7A00","good":"#FFC107","neutral":"#FF7A00","bad":"#E5262B","maximum":"#FFC107","center":"#FF7A00","minimum":"#1A0F02",
+"textClasses":{"label":{"fontFace":"Segoe UI","color":"#C9C5BB","fontSize":10},"callout":{"fontFace":"Segoe UI Semibold","color":"#FFC107","fontSize":28},"title":{"fontFace":"Segoe UI Semibold","color":"#FFC107","fontSize":12}},
+"visualStyles":{"*":{"*":{"background":[{"show":false}],"border":[{"show":false}],"title":[{"show":false}],"visualHeader":[{"show":false}]}},
+"page":{"*":{"background":[{"color":{"solid":{"color":"#05060A"}},"transparency":0}]}}}}
